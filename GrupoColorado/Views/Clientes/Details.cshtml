@@ -27,7 +27,11 @@
 
     <div class="col-md-6 mb-3">
       <label for="tipoPessoa" class="form-label">Tipo de Pessoa</label>
-      <input type="text" id="tipoPessoa" name="tipoPessoa" class="form-control" value="@Model.TipoPessoa" required maxlength="1" />
+      <select id="tipoPessoa" name="tipoPessoa" class="form-select" required>
+        <option value="">Selecione</option>
+        <option value="F">Física</option>
+        <option value="J">Jurídica</option>
+      </select>
     </div>
 
     <div class="col-md-6 mb-3">
@@ -62,7 +66,36 @@
 
     <div class="col-md-2 mb-3">
       <label for="uf" class="form-label">UF</label>
-      <input type="text" id="uf" name="uf" class="form-control" value="@Model.UF" required maxlength="2" />
+      <select id="uf" name="uf" class="form-select" required>
+        <option value="">Selecione</option>
+        <option value="AC">Acre</option>
+        <option value="AL">Alagoas</option>
+        <option value="AP">Amapá</option>
+        <option value="AM">Amazonas</option>
+        <option value="BA">Bahia</option>
+        <option value="CE">Ceará</option>
+        <option value="DF">Distrito Federal</option>
+        <option value="ES">Espírito Santo</option>
+        <option value="GO">Goiás</option>
+        <option value="MA">Maranhão</option>
+        <option value="MT">Mato Grosso</option>
+        <option value="MS">Mato Grosso do Sul</option>
+        <option value="MG">Minas Gerais</option>
+        <option value="PA">Pará</option>
+        <option value="PB">Paraíba</option>
+        <option value="PR">Paraná</option>
+        <option value="PE">Pernambuco</option>
+        <option value="PI">Piauí</option>
+        <option value="RJ">Rio de Janeiro</option>
+        <option value="RN">Rio Grande do Norte</option>
+        <option value="RS">Rio Grande do Sul</option>
+        <option value="RO">Rondônia</option>
+        <option value="RR">Roraima</option>
+        <option value="SC">Santa Catarina</option>
+        <option value="SP">São Paulo</option>
+        <option value="SE">Sergipe</option>
+        <option value="TO">Tocantins</option>
+      </select>
     </div>
   </div>
 
@@ -171,6 +204,16 @@
         $('.readonly-fields').show();
       }
 
+      const tipoPessoa = '@Model.TipoPessoa';
+      if (tipoPessoa) {
+        $('#tipoPessoa').val(tipoPessoa);
+      }
+
+      const uf = '@Model.UF';
+      if (uf) {
+        $('#uf').val(uf);
+      }
+
       // Submit do Form
       $('#clienteForm').on('submit', function (e) {
         e.preventDefault();
@@ -252,13 +295,13 @@
             orderable: false,
             render: function (data, type, row) {
               return `
-                                                                 <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
-                                                                   <i class="fas fa-edit"></i>
-                                                                 </button>
-                                                                 <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
-                                                                   <i class="fas fa-trash-alt"></i>
-                                                                 </button>
-                                                                 `;
+                                                                         <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
+                                                                           <i class="fas fa-edit"></i>
+                                                                         </button>
+                                                                         <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
+                                                                           <i class="fas fa-trash-alt"></i>
+                                                                         </button>
+                                                                         `;
             }
           }
         ],
@@ -334,7 +377,6 @@
           }
 
           const telefone = result.data;
-          console.log(telefone);
           $('#acaoForm').val('modify');
           $('#numeroTelefone').prop('disabled', true);
           $('#numeroTelefone').val(telefone.numeroTelefone);
@@ -357,6 +399,7 @@
 
         let formData = getFormData($(this));
         formData.codigoCliente = @Model.CodigoCliente;
+        formData.numeroTelefone = $("#numeroTelefone").val();
         formData.ativo = $('#ativo').prop('checked');
         // Remove os 2 campos que não são necessários, já que quem define esses valores é a API.
         delete formData.dataInsercaoTelefone;
