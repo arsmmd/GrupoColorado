@@ -105,8 +105,10 @@
       <input type="text" id="dataInsercao" name="dataInsercao" class="form-control" value="@Model.DataInsercao" readonly />
     </div>
     <div class="mb-3">
-      <label>Telefone de Inserção</label>
-      <input type="text" id="usuarioInsercao" name="usuarioInsercao" class="form-control" value="@Model.UsuarioInsercao" readonly />
+      <label>Usuário de Inserção</label>
+      <select id="usuarioInsercao" name="usuarioInsercao" class="form-select" disabled>
+        <option value="">Selecione</option>
+      </select>
     </div>
   </div>
 
@@ -115,9 +117,9 @@
 <br />
 <br />
 <br />
-<hr />
 
 <div id="areaTelefones">
+  <hr />
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="mb-0">Telefones do Cliente</h3>
     <button type="button" class="btn btn-success" id="btnAdicionar">
@@ -181,7 +183,9 @@
             </div>
             <div class="mb-3">
               <label>Usuário de Inserção</label>
-              <input type="text" id="usuarioInsercaoTelefone" name="usuarioInsercaoTelefone" class="form-control" readonly />
+              <select id="usuarioInsercaoTelefone" name="usuarioInsercaoTelefone" class="form-select" disabled>
+                <option value="">Selecione</option>
+              </select>
             </div>
           </div>
         </div>
@@ -196,8 +200,7 @@
 
 @section Scripts {
   <script>
-    function obterTiposTelefone()
-    {
+    function obterTiposTelefone() {
       $.ajax({
         url: '/TiposTelefone/GetAll',
         type: 'GET',
@@ -213,6 +216,24 @@
       });
     }
 
+    function obterUsuarios(callback) {
+      $.ajax({
+        url: '/Usuarios/GetAll',
+        type: 'GET',
+        success: function (result) {
+          const selectUsuarioInsercao = $('#usuarioInsercao');
+          const selectUsuarioInsercaoTelefone = $('#usuarioInsercaoTelefone');
+          result.data.forEach(function (item) {
+            selectUsuarioInsercao.append(`<option value="${item.codigoUsuario}">${item.nome}</option>`);
+            selectUsuarioInsercaoTelefone.append(`<option value="${item.codigoUsuario}">${item.nome}</option>`);
+          });
+        },
+        error: function () {
+          toastr.error('Erro ao carregar os usuários.');
+        }
+      }).then(callback);
+    }
+
     $(document).ready(function () {
       if ($("#codigoCliente").val() == 0) {
         $('#areaTelefones').hide();
@@ -225,14 +246,18 @@
       }
 
       const tipoPessoa = '@Model.TipoPessoa';
-      if (tipoPessoa) {
+      if (tipoPessoa)
         $('#tipoPessoa').val(tipoPessoa);
-      }
 
       const uf = '@Model.UF';
-      if (uf) {
+      if (uf)
         $('#uf').val(uf);
-      }
+
+      obterUsuarios(function () {
+        const usuarioInsercao = '@Model.UsuarioInsercao';
+        if (usuarioInsercao)
+          $('#usuarioInsercao').val(usuarioInsercao);
+      });
 
       // Submit do Form
       $('#clienteForm').on('submit', function (e) {
@@ -315,13 +340,13 @@
             orderable: false,
             render: function (data, type, row) {
               return `
-                                                                         <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
-                                                                           <i class="fas fa-edit"></i>
-                                                                         </button>
-                                                                         <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
-                                                                           <i class="fas fa-trash-alt"></i>
-                                                                         </button>
-                                                                         `;
+                          <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                          `;
             }
           }
         ],

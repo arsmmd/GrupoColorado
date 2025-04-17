@@ -114,13 +114,6 @@ GO
 ALTER TABLE [dbo].[Telefones] CHECK CONSTRAINT [FK_Telefones_Usuarios]
 GO
 
-ALTER TABLE [dbo].[TiposTelefone]  WITH CHECK ADD  CONSTRAINT [FK_TiposTelefone_TiposTelefone] FOREIGN KEY([CodigoTipoTelefone])
-REFERENCES [dbo].[TiposTelefone] ([CodigoTipoTelefone])
-GO
-
-ALTER TABLE [dbo].[TiposTelefone] CHECK CONSTRAINT [FK_TiposTelefone_TiposTelefone]
-GO
-
 ALTER TABLE [dbo].[TiposTelefone]  WITH CHECK ADD  CONSTRAINT [FK_TiposTelefone_Usuarios] FOREIGN KEY([UsuarioInsercao])
 REFERENCES [dbo].[Usuarios] ([CodigoUsuario])
 GO
@@ -128,13 +121,10 @@ GO
 ALTER TABLE [dbo].[TiposTelefone] CHECK CONSTRAINT [FK_TiposTelefone_Usuarios]
 GO
 
-USE [GrupoColorado]
-GO
-
-SET ANSI_PADDING ON
-GO
-
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Usuarios_Email] ON [dbo].[Usuarios] ([Email] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Telefones] ON [dbo].[Telefones] ([CodigoCliente] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 
 INSERT Usuarios (Nome, Email, Senha) VALUES ('Administrador', 'admin@grupocolorado.com.br', 'entrada#CRUD')

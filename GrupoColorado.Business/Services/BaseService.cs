@@ -1,7 +1,5 @@
 using GrupoColorado.Business.Interfaces.Repositories;
 using GrupoColorado.Business.Interfaces.Services;
-using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace GrupoColorado.Business.Services
@@ -15,9 +13,9 @@ namespace GrupoColorado.Business.Services
       _repository = repository;
     }
 
-    public virtual async Task<GrupoColorado.Business.Shared.PagedResults<T>> GetPagedAsync(GrupoColorado.Business.Shared.QueryParameters queryParameters, params Expression<Func<T, object>>[] includes)
+    public virtual async Task<GrupoColorado.Business.Shared.PagedResults<T>> GetPagedAsync(GrupoColorado.Business.Shared.QueryParameters queryParameters)
     {
-      return await _repository.GetPagedAsync(queryParameters, includes);
+      return await _repository.GetPagedAsync(queryParameters);
     }
 
     public virtual async Task<T> GetByPkAsync(params object[] key)

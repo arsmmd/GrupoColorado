@@ -27,11 +27,11 @@ namespace GrupoColorado.Infrastructure.Data.Mappings
       builder.Property(c => c.UF).IsRequired().HasColumnType("char(2)");
       builder.Property(c => c.DataInsercao).HasDefaultValueSql("getdate()");
 
-      builder.HasOne<Usuario>()
-          .WithMany()
-          .HasForeignKey(c => c.UsuarioInsercao)
-          .HasPrincipalKey(u => u.CodigoUsuario)
-          .OnDelete(DeleteBehavior.Restrict);
+      builder
+        .HasOne(c => c.Usuario)
+        .WithMany(u => u.Clientes)
+        .HasForeignKey(c => c.UsuarioInsercao)
+        .OnDelete(DeleteBehavior.Restrict);
     }
   }
 }

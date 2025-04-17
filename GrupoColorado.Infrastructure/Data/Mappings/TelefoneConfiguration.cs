@@ -17,10 +17,10 @@ namespace GrupoColorado.Infrastructure.Data.Mappings
       builder.Property(t => t.Ativo).HasDefaultValue(true);
       builder.Property(t => t.DataInsercao).HasDefaultValueSql("getdate()");
 
-      builder.HasOne<Cliente>()
-          .WithMany()
+      builder
+          .HasOne(t => t.Cliente)
+          .WithMany(c => c.Telefones)
           .HasForeignKey(t => t.CodigoCliente)
-          .HasForeignKey(c => c.CodigoCliente)
           .OnDelete(DeleteBehavior.Restrict);
 
       builder
@@ -29,10 +29,10 @@ namespace GrupoColorado.Infrastructure.Data.Mappings
           .HasForeignKey(t => t.CodigoTipoTelefone)
           .OnDelete(DeleteBehavior.Restrict);
 
-      builder.HasOne<Usuario>()
-          .WithMany()
+      builder
+          .HasOne(t => t.Usuario)
+          .WithMany(u => u.Telefones)
           .HasForeignKey(t => t.UsuarioInsercao)
-          .HasPrincipalKey(u => u.CodigoUsuario)
           .OnDelete(DeleteBehavior.Restrict);
     }
   }

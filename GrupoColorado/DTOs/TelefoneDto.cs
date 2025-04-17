@@ -12,6 +12,8 @@ namespace GrupoColorado.DTOs
     public DateTime DataInsercao { get; set; }
     public int UsuarioInsercao { get; set; }
 
+    public ClienteDto Cliente { get; set; }
     public TipoTelefoneDto TipoTelefone { get; set; }
+    public UsuarioDto Usuario { get; set; }
   }
 }

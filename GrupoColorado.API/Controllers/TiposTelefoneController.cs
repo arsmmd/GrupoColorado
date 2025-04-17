@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GrupoColorado.API.Controllers
@@ -35,12 +36,14 @@ namespace GrupoColorado.API.Controllers
     [HttpGet]
     public async Task<IActionResult> GetPagedAsync([FromQuery] GrupoColorado.Business.Shared.QueryParameters queryParameters)
     {
-      DefaultResponse<IEnumerable<TipoTelefone>> defaultResponseDto = new();
+      DefaultResponse<IEnumerable<TipoTelefoneDto>> defaultResponseDto = new();
 
       try
       {
         GrupoColorado.Business.Shared.PagedResults<TipoTelefone> results = await _service.GetPagedAsync(queryParameters);
-        defaultResponseDto.Data = results.Items;
+        if (results.Count > 0)
+          defaultResponseDto.Data = results.Items.Select(i => _mapper.Map<TipoTelefoneDto>(i)).ToList();
+
         defaultResponseDto.Count = results.Count;
         defaultResponseDto.ExitCode = 200;
       }

@@ -11,5 +11,6 @@ namespace GrupoColorado.Business.Entities
     public int UsuarioInsercao { get; set; }
 
     public ICollection<Telefone> Telefones { get; set; }
+    public Usuario Usuario { get; set; }
   }
 }

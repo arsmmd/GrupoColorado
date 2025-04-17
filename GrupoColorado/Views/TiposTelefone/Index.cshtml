@@ -50,7 +50,9 @@
             </div>
             <div class="mb-3">
               <label>Usuário de Inserção</label>
-              <input type="text" id="usuarioInsercao" name="usuarioInsercao" class="form-control" readonly />
+              <select id="usuarioInsercao" name="usuarioInsercao" class="form-select" disabled>
+                <option value="">Selecione</option>
+              </select>
             </div>
           </div>
         </div>
@@ -65,7 +67,24 @@
 
 @section Scripts {
   <script>
+    function obterUsuarios() {
+      $.ajax({
+        url: '/Usuarios/GetAll',
+        type: 'GET',
+        success: function (result) {
+          const select = $('#usuarioInsercao');
+          result.data.forEach(function (item) {
+            select.append(`<option value="${item.codigoUsuario}">${item.nome}</option>`);
+          });
+        },
+        error: function () {
+          toastr.error('Erro ao carregar os usuários.');
+        }
+      });
+    }
+
     $(document).ready(function () {
+      obterUsuarios();
 
       // Listagem no Data Table
       var table = $('#tiposTelefoneTable').DataTable({
@@ -104,13 +123,13 @@
             orderable: false,
             render: function (data, type, row) {
               return `
-                                   <button class="btn btn-sm btn-primary btn-update" data-codigotipotelefone="${row.codigoTipoTelefone}" title="Editar">
-                                     <i class="fas fa-edit"></i>
-                                   </button>
-                                   <button class="btn btn-sm btn-danger btn-delete" data-codigotipotelefone="${row.codigoTipoTelefone}" title="Excluir">
-                                     <i class="fas fa-trash-alt"></i>
-                                   </button>
-                                 `;
+                                       <button class="btn btn-sm btn-primary btn-update" data-codigotipotelefone="${row.codigoTipoTelefone}" title="Editar">
+                                         <i class="fas fa-edit"></i>
+                                       </button>
+                                       <button class="btn btn-sm btn-danger btn-delete" data-codigotipotelefone="${row.codigoTipoTelefone}" title="Excluir">
+                                         <i class="fas fa-trash-alt"></i>
+                                       </button>
+                                     `;
             }
           }
         ],

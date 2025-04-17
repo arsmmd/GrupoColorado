@@ -17,5 +17,7 @@ namespace GrupoColorado.DTOs
     public string UF { get; set; }
     public DateTime DataInsercao { get; set; }
     public int UsuarioInsercao { get; set; }
+
+    public UsuarioDto Usuario { get; set; }
   }
 }

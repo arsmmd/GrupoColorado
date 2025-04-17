@@ -77,6 +77,23 @@ namespace GrupoColorado.Controllers
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetAllAsync()
+    {
+      if (!ModelState.IsValid)
+        return BadRequest();
+
+      HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
+
+      HttpResponseMessage response = await client.GetAsync($"Usuarios?OrderBy=Nome&Page=1&PageSize={System.Int32.MaxValue}");
+      if (!(response.IsSuccessStatusCode))
+        return NoContent();
+
+      string json = await response.Content.ReadAsStringAsync();
+      DefaultResponse<List<UsuarioDto>> result = json.Deserialize<DefaultResponse<List<UsuarioDto>>>();
+      return Json(result);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetByPkAsync([FromQuery] int codigoUsuario)
     {
       if (!ModelState.IsValid)

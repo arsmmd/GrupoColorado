@@ -7,8 +7,11 @@ namespace GrupoColorado.Business.Services
 {
   public class TelefoneService : BaseService<Telefone>, ITelefoneService
   {
+    private readonly ITelefoneRepository _telefoneRepository;
+
     public TelefoneService(ITelefoneRepository telefoneRepository) : base(telefoneRepository)
     {
+      _telefoneRepository = telefoneRepository;
     }
 
     public async Task<GrupoColorado.Business.Shared.PagedResults<Telefone>> GetPagedAsync(int codigoCliente, GrupoColorado.Business.Shared.QueryParameters queryParameters)
@@ -21,7 +24,7 @@ namespace GrupoColorado.Business.Services
         queryParameters.Filters.Add("codigoCliente", codigoCliente.ToString());
       }
 
-      return await base.GetPagedAsync(queryParameters, t => t.TipoTelefone);
+      return await _telefoneRepository.GetPagedAsync(queryParameters, t => t.Cliente, t => t.TipoTelefone, t => t.Usuario);
     }
   }
 }

@@ -18,5 +18,7 @@ namespace GrupoColorado.API.DTOs
     public int CodigoCliente { get; internal set; }
     public DateTime DataInsercao { get; internal set; }
     public int UsuarioInsercao { get; internal set; }
+
+    public UsuarioDto Usuario { get; internal set; }
   }
 }

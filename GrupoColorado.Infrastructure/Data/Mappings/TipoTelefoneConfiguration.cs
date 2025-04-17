@@ -18,11 +18,11 @@ namespace GrupoColorado.Infrastructure.Data.Mappings
       builder.Property(t => t.DescricaoTipoTelefone).IsRequired().HasMaxLength(80);
       builder.Property(t => t.DataInsercao).HasDefaultValueSql("getdate()");
 
-      builder.HasOne<Usuario>()
-          .WithMany()
-          .HasForeignKey(t => t.UsuarioInsercao)
-          .HasPrincipalKey(u => u.CodigoUsuario)
-          .OnDelete(DeleteBehavior.Restrict);
+      builder
+        .HasOne(tt => tt.Usuario)
+        .WithMany(u => u.TiposTelefone)
+        .HasForeignKey(tt => tt.UsuarioInsercao)
+        .OnDelete(DeleteBehavior.Restrict);
     }
   }
 }
