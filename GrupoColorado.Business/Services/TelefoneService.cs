@@ -21,7 +21,7 @@ namespace GrupoColorado.Business.Services
         queryParameters.Filters.Add("codigoCliente", codigoCliente.ToString());
       }
 
-      return await base.GetPagedAsync(queryParameters);
+      return await base.GetPagedAsync(queryParameters, t => t.TipoTelefone);
     }
   }
 }

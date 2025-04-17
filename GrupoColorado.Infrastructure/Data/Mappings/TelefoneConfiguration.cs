@@ -23,10 +23,10 @@ namespace GrupoColorado.Infrastructure.Data.Mappings
           .HasForeignKey(c => c.CodigoCliente)
           .OnDelete(DeleteBehavior.Restrict);
 
-      builder.HasOne<TipoTelefone>()
-          .WithMany()
+      builder
+          .HasOne(t => t.TipoTelefone)
+          .WithMany(tt => tt.Telefones)
           .HasForeignKey(t => t.CodigoTipoTelefone)
-          .HasPrincipalKey(tt => tt.CodigoTipoTelefone)
           .OnDelete(DeleteBehavior.Restrict);
 
       builder.HasOne<Usuario>()

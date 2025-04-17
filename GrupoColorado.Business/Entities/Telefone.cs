@@ -11,5 +11,7 @@ namespace GrupoColorado.Business.Entities
     public bool Ativo { get; set; }
     public DateTime DataInsercao { get; set; }
     public int UsuarioInsercao { get; set; }
+
+    public TipoTelefone TipoTelefone { get; set; }
   }
 }

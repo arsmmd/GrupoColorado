@@ -27,7 +27,7 @@ namespace GrupoColorado.Infrastructure.Repositories
       _dbSet = _context.Set<T>();
     }
 
-    public virtual async Task<GrupoColorado.Business.Shared.PagedResults<T>> GetPagedAsync(GrupoColorado.Business.Shared.QueryParameters queryParameters)
+    public virtual async Task<GrupoColorado.Business.Shared.PagedResults<T>> GetPagedAsync(GrupoColorado.Business.Shared.QueryParameters queryParameters, params Expression<Func<T, object>>[] includes)
     {
       IQueryable<T> query = _dbSet.AsQueryable();
 
@@ -72,6 +72,11 @@ namespace GrupoColorado.Infrastructure.Repositories
           }
         }
       }
+
+      if (includes != null)
+        foreach (Expression<Func<T, object>> include in includes)
+          query = query.Include(include);
+
 
       // Ordenação
       if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))

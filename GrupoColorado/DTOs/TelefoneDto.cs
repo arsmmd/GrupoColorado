@@ -11,5 +11,7 @@ namespace GrupoColorado.DTOs
     public bool Ativo { get; set; }
     public DateTime DataInsercao { get; set; }
     public int UsuarioInsercao { get; set; }
+
+    public TipoTelefoneDto TipoTelefone { get; set; }
   }
 }

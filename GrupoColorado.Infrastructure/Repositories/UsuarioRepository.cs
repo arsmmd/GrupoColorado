@@ -1,9 +1,10 @@
 using GrupoColorado.Business.Entities;
 using GrupoColorado.Business.Interfaces.Repositories;
-using GrupoColorado.Business.Shared;
 using GrupoColorado.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace GrupoColorado.Infrastructure.Repositories
@@ -14,9 +15,9 @@ namespace GrupoColorado.Infrastructure.Repositories
     {
     }
 
-    public override async Task<GrupoColorado.Business.Shared.PagedResults<Usuario>> GetPagedAsync(GrupoColorado.Business.Shared.QueryParameters queryParameters)
+    public override async Task<GrupoColorado.Business.Shared.PagedResults<Usuario>> GetPagedAsync(GrupoColorado.Business.Shared.QueryParameters queryParameters, params Expression<Func<Usuario, object>>[] includes)
     {
-      GrupoColorado.Business.Shared.PagedResults<Usuario> pagedResults = await base.GetPagedAsync(queryParameters);
+      GrupoColorado.Business.Shared.PagedResults<Usuario> pagedResults = await base.GetPagedAsync(queryParameters, includes);
       foreach (var item in pagedResults.Items)
         item.Senha = null;
 
