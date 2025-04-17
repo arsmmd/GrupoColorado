@@ -24,8 +24,10 @@
       <label for="nomeFantasia" class="form-label">Nome Fantasia</label>
       <input type="text" id="nomeFantasia" name="nomeFantasia" class="form-control" value="@Model.NomeFantasia" required maxlength="100" />
     </div>
+  </div>
 
-    <div class="col-md-6 mb-3">
+  <div class="row">
+    <div class="col-md-4 mb-3">
       <label for="tipoPessoa" class="form-label">Tipo de Pessoa</label>
       <select id="tipoPessoa" name="tipoPessoa" class="form-select" required>
         <option value="">Selecione</option>
@@ -34,34 +36,33 @@
       </select>
     </div>
 
-    <div class="col-md-6 mb-3">
+    <div class="col-md-8 mb-3">
       <label for="documento" class="form-label">Documento</label>
       <input type="text" id="documento" name="documento" class="form-control" value="@Model.Documento" required maxlength="14" />
     </div>
+  </div>
 
-    <div class="col-md-6 mb-3">
+  <div class="row">
+    <div class="col-md-2 mb-3">
+      <label for="cep" class="form-label">CEP</label>
+      <input type="text" id="cep" name="cep" class="form-control" value="@Model.CEP" required maxlength="8" />
+    </div>
+
+    <div class="col-md-5 mb-3">
       <label for="endereco" class="form-label">Endereço</label>
       <input type="text" id="endereco" name="endereco" class="form-control" value="@Model.Endereco" required maxlength="100" />
     </div>
 
-    <div class="col-md-6 mb-3">
+    <div class="col-md-5 mb-3">
       <label for="complemento" class="form-label">Complemento</label>
       <input type="text" id="complemento" name="complemento" class="form-control" value="@Model.Complemento" maxlength="100" />
     </div>
+  </div>
 
+  <div class="row">
     <div class="col-md-4 mb-3">
       <label for="bairro" class="form-label">Bairro</label>
       <input type="text" id="bairro" name="bairro" class="form-control" value="@Model.Bairro" required maxlength="100" />
-    </div>
-
-    <div class="col-md-4 mb-3">
-      <label for="cidade" class="form-label">Cidade</label>
-      <input type="text" id="cidade" name="cidade" class="form-control" value="@Model.Cidade" required maxlength="100" />
-    </div>
-
-    <div class="col-md-2 mb-3">
-      <label for="cep" class="form-label">CEP</label>
-      <input type="text" id="cep" name="cep" class="form-control" value="@Model.CEP" required maxlength="8" />
     </div>
 
     <div class="col-md-2 mb-3">
@@ -97,18 +98,26 @@
         <option value="TO">Tocantins</option>
       </select>
     </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="cidade" class="form-label">Cidade</label>
+      <input type="text" id="cidade" name="cidade" class="form-control" value="@Model.Cidade" required maxlength="100" />
+    </div>
   </div>
 
   <div class="readonly-fields">
-    <div class="mb-3">
-      <label>Data de Inserção</label>
-      <input type="text" id="dataInsercao" name="dataInsercao" class="form-control" value="@Model.DataInsercao" readonly />
-    </div>
-    <div class="mb-3">
-      <label>Usuário de Inserção</label>
-      <select id="usuarioInsercao" name="usuarioInsercao" class="form-select" disabled>
-        <option value="">Selecione</option>
-      </select>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Data de Inserção</label>
+        <input type="text" id="dataInsercao" name="dataInsercao" class="form-control" value="@Model.DataInsercao" readonly />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Usuário de Inserção</label>
+        <select id="usuarioInsercao" name="usuarioInsercao" class="form-select" disabled>
+          <option value="">Selecione</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -340,13 +349,13 @@
             orderable: false,
             render: function (data, type, row) {
               return `
-                          <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
-                            <i class="fas fa-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
-                            <i class="fas fa-trash-alt"></i>
-                          </button>
-                          `;
+                                                  <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                  </button>
+                                                  `;
             }
           }
         ],
