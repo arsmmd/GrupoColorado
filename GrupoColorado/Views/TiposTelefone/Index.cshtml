@@ -1,0 +1,235 @@
+﻿@{
+  ViewData["Title"] = "Listagem de Tipos de Telefone";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Tipos de Telefone</h2>
+  <button type="button" class="btn btn-success" id="btnAdicionar">
+    <i class="fas fa-plus"></i> Adicionar
+  </button>
+</div>
+<br />
+<br />
+
+<table id="tiposTelefoneTable" class="display nowrap" style="width:100%">
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Descrição</th>
+      <th>Data de Inserção</th>
+      <th>Ações</th>
+    </tr>
+    <tr>
+      <th><input type="text" placeholder="Filtrar por Código do Tipo do Telefone" class="form-control form-control-sm" /></th>
+      <th><input type="text" placeholder="Filtrar por parte da Descrição" class="form-control form-control-sm" /></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+</table>
+
+<div class="modal fade" id="modalTipoTelefone" tabindex="-1" role="dialog" aria-labelledby="modalTipoTelefoneLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="formTipoTelefone">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTipoTelefoneLabel">Editar Tipo de Telefone</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="codigoTipoTelefone" name="codigoTipoTelefone" />
+          <div class="mb-3">
+            <label>Descrição</label>
+            <input type="text" id="descricaoTipoTelefone" name="descricaoTipoTelefone" class="form-control" required maxlength="80" />
+          </div>
+          <div class="readonly-fields">
+            <div class="mb-3">
+              <label>Data de Inserção</label>
+              <input type="text" id="dataInsercao" name="dataInsercao" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label>Usuário de Inserção</label>
+              <input type="text" id="usuarioInsercao" name="usuarioInsercao" class="form-control" readonly />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Salvar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+  <script>
+    $(document).ready(function () {
+
+      // Listagem no Data Table
+      var table = $('#tiposTelefoneTable').DataTable({
+        orderCellsTop: true,
+        fixedHeader: true,
+        searching: true,
+        responsive: true,
+        serverSide: true,
+        processing: true,
+        ajax: {
+          url: '/TiposTelefone/Read',
+          type: 'POST',
+          dataSrc: function (json) {
+            return json.data;
+          },
+          dataFilter: function (data) {
+            let json = JSON.parse(data);
+            return JSON.stringify({
+              recordsTotal: json.count,
+              recordsFiltered: json.count,
+              data: json.data
+            });
+          }
+        },
+        columns: [
+          { data: 'codigoTipoTelefone' },
+          { data: 'descricaoTipoTelefone' },
+          {
+            data: 'dataInsercao',
+            render: function (data) {
+              return formatPtBrDateTime(data);
+            }
+          },
+          {
+            data: null,
+            orderable: false,
+            render: function (data, type, row) {
+              return `
+                                   <button class="btn btn-sm btn-primary btn-update" data-codigotipotelefone="${row.codigoTipoTelefone}" title="Editar">
+                                     <i class="fas fa-edit"></i>
+                                   </button>
+                                   <button class="btn btn-sm btn-danger btn-delete" data-codigotipotelefone="${row.codigoTipoTelefone}" title="Excluir">
+                                     <i class="fas fa-trash-alt"></i>
+                                   </button>
+                                 `;
+            }
+          }
+        ],
+        language: {
+          url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+        },
+      });
+
+      // Filtro com temporizador
+      $('#tiposTelefoneTable thead tr:eq(1) th').each(function (i) {
+        $('input', this).on('keyup change', debounce(function () {
+          if (table.column(i).search() !== this.value) {
+            table
+              .column(i)
+              .search(this.value)
+              .draw();
+          }
+        }, 500));
+      });
+
+
+      // Inclusão
+      $('#btnAdicionar').on('click', function () {
+        $('#codigoTipoTelefone').val(0);
+        $('#descricaoTipoTelefone').val("");
+        $('#dataInsercao').val("");
+        $('#usuarioInsercao').val("");
+        $('.readonly-fields').hide();
+
+        $("#modalTipoTelefoneLabel").html("Cadastrar Tipo de Telefone");
+        $('#modalTipoTelefone').modal('show');
+      });
+
+
+      // Exclusão
+      $(document).on('click', '.btn-delete', function () {
+        const key = $(this).data('codigotipotelefone');
+        Swal.fire({
+          title: 'Confirma a exclusão do registro?',
+          text: "Essa operação é irreversível",
+          icon: 'warning',
+          showCancelButton: true
+        }).then((result) => {
+          if ((result.isConfirmed) && (key !== null)) {
+            $.ajax({
+              url: `/TiposTelefone/Delete?codigoTipoTelefone=${key}`,
+              type: 'DELETE',
+              success: function () {
+                toastr.success('Registro excluído com sucesso!');
+                $('#tiposTelefoneTable').DataTable().ajax.reload(null, false);
+              },
+              error: function (e) {
+                toastr.error(e.responseText);
+              }
+            });
+          }
+        });
+      });
+
+
+      // Popup para atualização
+      $(document).on('click', '.btn-update', function () {
+        const key = $(this).data('codigotipotelefone');
+
+        $.get(`TiposTelefone/GetByPk?codigoTipoTelefone=${key}`, function (result) {
+          if (!(result.success)) {
+            toastr.error("Não foi possível obter os dados.");
+            return;
+          }
+
+          const tipoTelefone = result.data;
+          $('#codigoTipoTelefone').val(tipoTelefone.codigoTipoTelefone);
+          $('#descricaoTipoTelefone').val(tipoTelefone.descricaoTipoTelefone);
+          $('#dataInsercao').val(formatPtBrDateTime(tipoTelefone.dataInsercao));
+          $('#usuarioInsercao').val(tipoTelefone.usuarioInsercao);
+          $('.readonly-fields').show();
+
+          $("#modalTipoTelefoneLabel").html("Editar Tipo de Telefone");
+          $('#modalTipoTelefone').modal('show');
+        });
+      });
+
+
+      // Submit do Form
+      $('#formTipoTelefone').on('submit', function (e) {
+        e.preventDefault();
+
+        let formData = getFormData($(this));
+        // Remove os 2 campos que não serão necessários, já que quem define esses valores é a API.
+        delete formData.dataInsercao;
+        delete formData.usuarioInsercao;
+
+        let endpoint;
+        let type;
+        if (formData.codigoTipoTelefone == 0) {
+          endpoint = 'Create';
+          type = 'POST';
+        }
+        else {
+          endpoint = 'Update';
+          type = 'PUT';
+        }
+
+        $.ajax({
+          url: `/TiposTelefone/${endpoint}`,
+          type,
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          success: function () {
+            $('#tiposTelefoneTable').DataTable().ajax.reload(null, false);
+            $('#modalTipoTelefone').modal('hide');
+            toastr.success('Registro atualizado com sucesso!');
+          },
+          error: function (e) {
+            toastr.error(e.responseText);
+          }
+        });
+      });
+    });
+
+  </script>
+}
