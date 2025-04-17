@@ -67,7 +67,7 @@ namespace GrupoColorado.Controllers
         PageSize = request.Length
       };
 
-      HttpResponseMessage response = await client.GetAsync($"Usuarios{queryParameters.ToQueryString()}");
+      HttpResponseMessage response = await client.GetAsync($"Usuarios?{queryParameters.ToQueryString()}");
       if (!(response.IsSuccessStatusCode))
         return NoContent();
 

@@ -5,9 +5,9 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h2 class="mb-0">Clientes</h2>
-  <button type="button" class="btn btn-success" id="btnAdicionar">
+  <a href="/Clientes/Details" class="btn btn-success" title="Adicionar">
     <i class="fas fa-plus"></i> Adicionar
-  </button>
+  </a>
 </div>
 <br />
 <br />
@@ -76,9 +76,9 @@
             orderable: false,
             render: function (data, type, row) {
               return `
-                                             <button class="btn btn-sm btn-primary btn-update" data-codigousuario="${row.codigoCliente}" title="Editar">
+                                             <a href="/Clientes/Details?codigoCliente=${row.codigoCliente}" class="btn btn-sm btn-primary me-1" title="Editar">
                                                <i class="fas fa-edit"></i>
-                                             </button>
+                                             </a>
                                              <button class="btn btn-sm btn-danger btn-delete" data-codigousuario="${row.codigoCliente}" title="Excluir">
                                                <i class="fas fa-trash-alt"></i>
                                              </button>
@@ -101,22 +101,6 @@
               .draw();
           }
         }, 500));
-      });
-
-
-      // Inclusão
-      $('#btnAdicionar').on('click', function () {
-        $('#codigoCliente').val(0);
-        $('#nome').val("");
-        $('#email').val("");
-        $('#senha').val("");
-        $('#ativo').prop('checked', true);
-        $('#dataInsercao').val("");
-        $('.readonly-fields').hide();
-        $('.writeonly-fields').show();
-
-        $("#modalClienteLabel").html("Cadastrar Cliente");
-        $('#modalCliente').modal('show');
       });
 
 

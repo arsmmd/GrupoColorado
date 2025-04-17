@@ -191,7 +191,7 @@
       $(document).on('click', '.btn-update', function () {
         const key = $(this).data('codigousuario');
 
-        $.get(`Usuarios/GetByPk?codigoUsuario=${key}`, function (result) {
+        $.get(`/Usuarios/GetByPk?codigoUsuario=${key}`, function (result) {
           if (!(result.success)) {
             toastr.error("Não foi possível obter os dados.");
             return;
@@ -224,13 +224,16 @@
 
         let endpoint;
         let type;
+        let message;
         if (formData.codigoUsuario == 0) {
           endpoint = 'Create';
           type = 'POST';
+          message = 'inserido';
         }
         else {
           endpoint = 'Update';
           type = 'PUT';
+          message = 'atualizado';
         }
 
         $.ajax({
@@ -241,7 +244,7 @@
           success: function () {
             $('#usuariosTable').DataTable().ajax.reload(null, false);
             $('#modalUsuario').modal('hide');
-            toastr.success('Registro atualizado com sucesso!');
+            toastr.success(`Registro ${message} com sucesso!`);
           },
           error: function (e) {
             toastr.error(e.responseText);

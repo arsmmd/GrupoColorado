@@ -32,7 +32,7 @@ namespace GrupoColorado.Extensions
           }
       }
 
-      return $"?{string.Join("&", queryParams)}";
+      return string.Join("&", queryParams);
     }
   }
 }

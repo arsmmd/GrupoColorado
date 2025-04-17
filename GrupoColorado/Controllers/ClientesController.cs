@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -24,6 +25,28 @@ namespace GrupoColorado.Controllers
     [HttpGet]
     public IActionResult Index() => View();
 
+    [HttpGet]
+    public async Task<IActionResult> DetailsAsync([FromQuery] int codigoCliente)
+    {
+      if (!ModelState.IsValid)
+        return BadRequest();
+
+      if (codigoCliente == 0)
+        return View(new ClienteDto());
+
+      HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
+      HttpResponseMessage response = await client.GetAsync($"Clientes/{codigoCliente}");
+      if (!response.IsSuccessStatusCode)
+        return BadRequest();
+
+      string json = await response.Content.ReadAsStringAsync();
+      DefaultResponse<ClienteDto> result = json.Deserialize<DefaultResponse<ClienteDto>>();
+      if (result.Count == 0)
+        result.Data = new ClienteDto();
+
+      return View(result.Data);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] ClienteDto usuario)
     {
@@ -33,7 +56,12 @@ namespace GrupoColorado.Controllers
       HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
       HttpResponseMessage response = await client.PostAsync("Clientes", usuario.Serialize().CreateStringContent());
       string json = await response.Content.ReadAsStringAsync();
-      if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+      if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+      {
+        DefaultResponse result = json.Deserialize<DefaultResponse>();
+        return BadRequest(result.Message);
+      }
+      else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
       {
         DefaultResponse<List<ValidationError>> result = json.Deserialize<DefaultResponse<List<ValidationError>>>();
         return BadRequest(ValidationError.FormatOutput(result.Data));
@@ -67,7 +95,7 @@ namespace GrupoColorado.Controllers
         PageSize = request.Length
       };
 
-      HttpResponseMessage response = await client.GetAsync($"Clientes{queryParameters.ToQueryString()}");
+      HttpResponseMessage response = await client.GetAsync($"Clientes?{queryParameters.ToQueryString()}");
       if (!(response.IsSuccessStatusCode))
         return NoContent();
 
@@ -98,7 +126,12 @@ namespace GrupoColorado.Controllers
       HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
       HttpResponseMessage response = await client.PutAsync($"Clientes/{usuario.CodigoCliente}", usuario.Serialize().CreateStringContent());
       string json = await response.Content.ReadAsStringAsync();
-      if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+      if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+      {
+        DefaultResponse result = json.Deserialize<DefaultResponse>();
+        return BadRequest(result.Message);
+      }
+      else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
       {
         DefaultResponse<List<ValidationError>> result = json.Deserialize<DefaultResponse<List<ValidationError>>>();
         return BadRequest(ValidationError.FormatOutput(result.Data));

@@ -1,0 +1,396 @@
+﻿@model GrupoColorado.DTOs.ClienteDto
+
+@{
+  ViewData["Title"] = "Cliente";
+}
+
+<h2 class="d-flex justify-content-between align-items-center">
+  Cliente
+  <a href="/Clientes" class="btn btn-secondary">Voltar</a>
+</h2>
+<br />
+<br />
+
+<form id="clienteForm">
+  <input type="hidden" id="codigoCliente" name="codigoCliente" value="@Model.CodigoCliente" />
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="razaoSocial" class="form-label">Razão Social</label>
+      <input type="text" id="razaoSocial" name="razaoSocial" class="form-control" value="@Model.RazaoSocial" required maxlength="100" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="nomeFantasia" class="form-label">Nome Fantasia</label>
+      <input type="text" id="nomeFantasia" name="nomeFantasia" class="form-control" value="@Model.NomeFantasia" required maxlength="100" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="tipoPessoa" class="form-label">Tipo de Pessoa</label>
+      <input type="text" id="tipoPessoa" name="tipoPessoa" class="form-control" value="@Model.TipoPessoa" required maxlength="1" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="documento" class="form-label">Documento</label>
+      <input type="text" id="documento" name="documento" class="form-control" value="@Model.Documento" required maxlength="14" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="endereco" class="form-label">Endereço</label>
+      <input type="text" id="endereco" name="endereco" class="form-control" value="@Model.Endereco" required maxlength="100" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="complemento" class="form-label">Complemento</label>
+      <input type="text" id="complemento" name="complemento" class="form-control" value="@Model.Complemento" maxlength="100" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="bairro" class="form-label">Bairro</label>
+      <input type="text" id="bairro" name="bairro" class="form-control" value="@Model.Bairro" required maxlength="100" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="cidade" class="form-label">Cidade</label>
+      <input type="text" id="cidade" name="cidade" class="form-control" value="@Model.Cidade" required maxlength="100" />
+    </div>
+
+    <div class="col-md-2 mb-3">
+      <label for="cep" class="form-label">CEP</label>
+      <input type="text" id="cep" name="cep" class="form-control" value="@Model.CEP" required maxlength="8" />
+    </div>
+
+    <div class="col-md-2 mb-3">
+      <label for="uf" class="form-label">UF</label>
+      <input type="text" id="uf" name="uf" class="form-control" value="@Model.UF" required maxlength="2" />
+    </div>
+  </div>
+
+  <div class="readonly-fields">
+    <div class="mb-3">
+      <label>Data de Inserção</label>
+      <input type="text" id="dataInsercao" name="dataInsercao" class="form-control" value="@Model.DataInsercao" readonly />
+    </div>
+    <div class="mb-3">
+      <label>Telefone de Inserção</label>
+      <input type="text" id="usuarioInsercao" name="usuarioInsercao" class="form-control" value="@Model.UsuarioInsercao" readonly />
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
+<br />
+<br />
+<br />
+<hr />
+
+<div id="areaTelefones">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Telefones do Cliente</h3>
+    <button type="button" class="btn btn-success" id="btnAdicionar">
+      <i class="fas fa-plus"></i> Adicionar
+    </button>
+  </div>
+  <br />
+
+  <table id="telefonesTable" class="display nowrap" style="width:100%">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Tipo</th>
+        <th>Operadora</th>
+        <th>Data de Inserção</th>
+        <th>Ações</th>
+      </tr>
+      <tr>
+        <th><input type="text" placeholder="Filtrar por parte do Número" class="form-control form-control-sm" /></th>
+        <th><input type="text" placeholder="Filtrar por Tipo" class="form-control form-control-sm" /></th>
+        <th><input type="text" placeholder="Filtrar por parte da operadora" class="form-control form-control-sm" /></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div class="modal fade" id="modalTelefone" tabindex="-1" role="dialog" aria-labelledby="modalTelefoneLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="formTelefone">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTelefoneLabel">Editar Telefone</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="acaoForm" name="acaoForm" />
+          <div class="mb-3">
+            <label>Número</label>
+            <input type="text" id="numeroTelefone" name="numeroTelefone" class="form-control" required maxlength="11" />
+          </div>
+          <div class="mb-3">
+            <label>Tipo</label>
+            <input type="text" id="codigoTipoTelefone" name="codigoTipoTelefone" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label>Operadora</label>
+            <input type="text" id="operadora" name="operadora" class="form-control" required maxlength="100" />
+          </div>
+          <div class="readonly-fields">
+            <div class="mb-3">
+              <input type="checkbox" id="ativo" name="ativo" class="form-check-input" />
+              <label>Ativo</label>
+            </div>
+            <div class="mb-3">
+              <label>Data de Inserção</label>
+              <input type="text" id="dataInsercaoTelefone" name="dataInsercaoTelefone" class="form-control" readonly />
+            </div>
+            <div class="mb-3">
+              <label>Usuário de Inserção</label>
+              <input type="text" id="usuarioInsercaoTelefone" name="usuarioInsercaoTelefone" class="form-control" readonly />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Salvar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+  <script>
+    $(document).ready(function () {
+      if ($("#codigoCliente").val() == 0) {
+        $('#areaTelefones').hide();
+        $('.readonly-fields').hide();
+      }
+      else {
+        $('#areaTelefones').show();
+        $('.readonly-fields').show();
+      }
+
+      // Submit do Form
+      $('#clienteForm').on('submit', function (e) {
+        e.preventDefault();
+
+        let formData = getFormData($(this));
+        // Remove os 2 campos que não serão necessários, já que quem define esses valores é a API.
+        delete formData.dataInsercao;
+        delete formData.usuarioInsercao;
+
+        let endpoint;
+        let type;
+        let message;
+        if (formData.codigoCliente == 0) {
+          endpoint = 'Create';
+          type = 'POST';
+          message = 'inserido';
+        }
+        else {
+          endpoint = 'Update';
+          type = 'PUT';
+          message = 'atualizado';
+        }
+
+        $.ajax({
+          url: `/Clientes/${endpoint}`,
+          type,
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          success: function () {
+            toastr.success(`Registro ${message} com sucesso!`);
+            if (formData.codigoCliente == 0)
+              window.location.href = '/Clientes';
+          },
+          error: function (e) {
+            toastr.error(e.responseText);
+          }
+        });
+      });
+
+
+
+
+
+      // Listagem no Data Table
+      var table = $('#telefonesTable').DataTable({
+        orderCellsTop: true,
+        fixedHeader: true,
+        searching: true,
+        responsive: true,
+        serverSide: true,
+        processing: true,
+        ajax: {
+          url: '/Telefones/Read?codigoCliente=@Model.CodigoCliente',
+          type: 'POST',
+          dataSrc: function (json) {
+            return json.data;
+          },
+          dataFilter: function (data) {
+            let json = JSON.parse(data);
+            return JSON.stringify({
+              recordsTotal: json.count,
+              recordsFiltered: json.count,
+              data: json.data
+            });
+          }
+        },
+        columns: [
+          { data: 'numeroTelefone' },
+          { data: 'codigoTipoTelefone' },
+          { data: 'operadora' },
+          {
+            data: 'dataInsercao',
+            render: function (data) {
+              return formatPtBrDateTime(data);
+            }
+          },
+          {
+            data: null,
+            orderable: false,
+            render: function (data, type, row) {
+              return `
+                                                                 <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
+                                                                   <i class="fas fa-edit"></i>
+                                                                 </button>
+                                                                 <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
+                                                                   <i class="fas fa-trash-alt"></i>
+                                                                 </button>
+                                                                 `;
+            }
+          }
+        ],
+        language: {
+          url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+        },
+      });
+
+      // Filtro com temporizador
+      $('#telefonesTable thead tr:eq(1) th').each(function (i) {
+        $('input', this).on('keyup change', debounce(function () {
+          if (table.column(i).search() !== this.value) {
+            table
+              .column(i)
+              .search(this.value)
+              .draw();
+          }
+        }, 500));
+      });
+
+
+      // Inclusão
+      $('#btnAdicionar').on('click', function () {
+        $('#acaoForm').val('add');
+        $('#numeroTelefone').prop('disabled', false);
+        $('#numeroTelefone').val("");
+        $('#codigoTipoTelefone').val("");
+        $('#operadora').val("");
+        $('#ativo').prop('checked', true);
+        $('#dataInsercaoTelefone').val("");
+        $('#usuarioInsercaoTelefone').val("");
+        $('.readonly-fields').hide();
+
+        $("#modalTelefoneLabel").html("Cadastrar Telefone");
+        $('#modalTelefone').modal('show');
+      });
+
+
+      // Exclusão
+      $(document).on('click', '.btn-delete', function () {
+        const key = $(this).data('numerotelefone');
+        Swal.fire({
+          title: 'Confirma a exclusão do registro?',
+          text: "Essa operação é irreversível",
+          icon: 'warning',
+          showCancelButton: true
+        }).then((result) => {
+          if ((result.isConfirmed) && (key !== null)) {
+            $.ajax({
+              url: `/Telefones/Delete?codigoCliente=${@Model.CodigoCliente}&numeroTelefone=${key}`,
+              type: 'DELETE',
+              success: function () {
+                toastr.success('Registro excluído com sucesso!');
+                $('#telefonesTable').DataTable().ajax.reload(null, false);
+              },
+              error: function (e) {
+                toastr.error(e.responseText);
+              }
+            });
+          }
+        });
+      });
+
+
+      // Popup para atualização
+      $(document).on('click', '.btn-update', function () {
+        const key = $(this).data('numerotelefone');
+
+        $.get(`/Telefones/GetByPk?codigoCliente=${@Model.CodigoCliente}&numeroTelefone=${key}`, function (result) {
+          if (!(result.success)) {
+            toastr.error("Não foi possível obter os dados.");
+            return;
+          }
+
+          const telefone = result.data;
+          console.log(telefone);
+          $('#acaoForm').val('modify');
+          $('#numeroTelefone').prop('disabled', true);
+          $('#numeroTelefone').val(telefone.numeroTelefone);
+          $('#codigoTipoTelefone').val(telefone.codigoTipoTelefone);
+          $('#operadora').val(telefone.operadora);
+          $('#ativo').prop('checked', telefone.ativo);
+          $('#dataInsercaoTelefone').val(formatPtBrDateTime(telefone.dataInsercao));
+          $('#usuarioInsercaoTelefone').val(telefone.usuarioInsercao);
+          $('.readonly-fields').show();
+
+          $("#modalTelefoneLabel").html("Editar Telefone");
+          $('#modalTelefone').modal('show');
+        });
+      });
+
+
+      // Submit do Form
+      $('#formTelefone').on('submit', function (e) {
+        e.preventDefault();
+
+        let formData = getFormData($(this));
+        formData.codigoCliente = @Model.CodigoCliente;
+        formData.ativo = $('#ativo').prop('checked');
+        // Remove os 2 campos que não são necessários, já que quem define esses valores é a API.
+        delete formData.dataInsercaoTelefone;
+        delete formData.usuarioInsercaoTelefone;
+
+        let endpoint;
+        let type;
+        let message;
+        if (formData.acaoForm == 'add') {
+          endpoint = 'Create';
+          type = 'POST';
+          message = 'inserido';
+        }
+        else {
+          endpoint = 'Update';
+          type = 'PUT';
+          message = 'atualizado';
+        }
+
+        $.ajax({
+          url: `/Telefones/${endpoint}?codigoCliente=@Model.CodigoCliente`,
+          type,
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          success: function () {
+            $('#telefonesTable').DataTable().ajax.reload(null, false);
+            $('#modalTelefone').modal('hide');
+            toastr.success(`Registro ${message} com sucesso!`);
+          },
+          error: function (e) {
+            toastr.error(e.responseText);
+          }
+        });
+      });
+    });
+  </script>
+}

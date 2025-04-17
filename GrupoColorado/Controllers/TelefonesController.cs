@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace GrupoColorado.Controllers
 {
   [Authorize]
-  public class TiposTelefoneController : Controller
+  public class TelefonesController : Controller
   {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public TiposTelefoneController(IHttpClientFactory httpClientFactory)
+    public TelefonesController(IHttpClientFactory httpClientFactory)
     {
       _httpClientFactory = httpClientFactory;
     }
@@ -25,13 +25,13 @@ namespace GrupoColorado.Controllers
     public IActionResult Index() => View();
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] TipoTelefoneDto tipoTelefone)
+    public async Task<IActionResult> CreateAsync([FromBody] TelefoneDto telefone)
     {
       if (!ModelState.IsValid)
         return BadRequest();
 
       HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
-      HttpResponseMessage response = await client.PostAsync("TiposTelefone", tipoTelefone.Serialize().CreateStringContent());
+      HttpResponseMessage response = await client.PostAsync("Telefones", telefone.Serialize().CreateStringContent());
       string json = await response.Content.ReadAsStringAsync();
       if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
       {
@@ -45,13 +45,13 @@ namespace GrupoColorado.Controllers
       }
       else
       {
-        DefaultResponse<UsuarioDto> result = json.Deserialize<DefaultResponse<UsuarioDto>>();
+        DefaultResponse<TelefoneDto> result = json.Deserialize<DefaultResponse<TelefoneDto>>();
         return Json(result);
       }
     }
 
     [HttpPost]
-    public async Task<IActionResult> ReadAsync([FromForm] DataTableRequest request)
+    public async Task<IActionResult> ReadAsync([FromQuery] int codigoCliente, [FromForm] DataTableRequest request)
     {
       if (!ModelState.IsValid)
         return BadRequest();
@@ -72,36 +72,36 @@ namespace GrupoColorado.Controllers
         PageSize = request.Length
       };
 
-      HttpResponseMessage response = await client.GetAsync($"TiposTelefone?{queryParameters.ToQueryString()}");
+      HttpResponseMessage response = await client.GetAsync($"Telefones?codigoCliente={codigoCliente}&{queryParameters.ToQueryString()}");
       if (!(response.IsSuccessStatusCode))
         return NoContent();
 
       string json = await response.Content.ReadAsStringAsync();
-      DefaultResponse<List<TipoTelefoneDto>> result = json.Deserialize<DefaultResponse<List<TipoTelefoneDto>>>();
+      DefaultResponse<List<TelefoneDto>> result = json.Deserialize<DefaultResponse<List<TelefoneDto>>>();
       return Json(result);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetByPkAsync([FromQuery] int codigoTipoTelefone)
+    public async Task<IActionResult> GetByPkAsync([FromQuery] int codigoCliente, [FromQuery] string numeroTelefone)
     {
       if (!ModelState.IsValid)
         return BadRequest();
 
       HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
-      HttpResponseMessage response = await client.GetAsync($"TiposTelefone/{codigoTipoTelefone}");
+      HttpResponseMessage response = await client.GetAsync($"Telefones/{codigoCliente}/{numeroTelefone}");
       string json = await response.Content.ReadAsStringAsync();
-      DefaultResponse<TipoTelefoneDto> result = json.Deserialize<DefaultResponse<TipoTelefoneDto>>();
+      DefaultResponse<TelefoneDto> result = json.Deserialize<DefaultResponse<TelefoneDto>>();
       return Json(result);
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] TipoTelefoneDto tipoTelefone)
+    public async Task<IActionResult> UpdateAsync([FromBody] TelefoneDto telefone)
     {
       if (!ModelState.IsValid)
         return BadRequest();
 
       HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
-      HttpResponseMessage response = await client.PutAsync($"TiposTelefone/{tipoTelefone.CodigoTipoTelefone}", tipoTelefone.Serialize().CreateStringContent());
+      HttpResponseMessage response = await client.PutAsync($"Telefones/{telefone.CodigoCliente}/{telefone.NumeroTelefone}", telefone.Serialize().CreateStringContent());
       string json = await response.Content.ReadAsStringAsync();
       if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
       {
@@ -115,13 +115,13 @@ namespace GrupoColorado.Controllers
       }
       else
       {
-        DefaultResponse<UsuarioDto> result = json.Deserialize<DefaultResponse<UsuarioDto>>();
+        DefaultResponse<TelefoneDto> result = json.Deserialize<DefaultResponse<TelefoneDto>>();
         return Json(result);
       }
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteAsync([FromQuery] int codigoTipoTelefone)
+    public async Task<IActionResult> DeleteAsync([FromQuery] int codigoCliente, [FromQuery] string numeroTelefone)
     {
       if (!ModelState.IsValid)
         return BadRequest();
@@ -130,7 +130,7 @@ namespace GrupoColorado.Controllers
 
       try
       {
-        HttpResponseMessage response = await client.DeleteAsync($"TiposTelefone/{codigoTipoTelefone}");
+        HttpResponseMessage response = await client.DeleteAsync($"Telefones/{codigoCliente}/{numeroTelefone}");
         if (response.IsSuccessStatusCode)
           return Ok();
 

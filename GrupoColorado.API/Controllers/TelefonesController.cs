@@ -33,13 +33,13 @@ namespace GrupoColorado.API.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetPagedAsync([FromQuery] GrupoColorado.Business.Shared.QueryParameters queryParameters)
+    public async Task<IActionResult> GetPagedAsync([FromQuery] int codigoCliente, [FromQuery] GrupoColorado.Business.Shared.QueryParameters queryParameters)
     {
       DefaultResponse<IEnumerable<Telefone>> defaultResponseDto = new();
 
       try
       {
-        GrupoColorado.Business.Shared.PagedResults<Telefone> results = await _service.GetPagedAsync(queryParameters);
+        GrupoColorado.Business.Shared.PagedResults<Telefone> results = await _service.GetPagedAsync(codigoCliente, queryParameters);
         defaultResponseDto.Data = results.Items;
         defaultResponseDto.Count = results.Count;
         defaultResponseDto.ExitCode = 200;
