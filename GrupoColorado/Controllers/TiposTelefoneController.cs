@@ -82,6 +82,23 @@ namespace GrupoColorado.Controllers
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetAllAsync()
+    {
+      if (!ModelState.IsValid)
+        return BadRequest();
+
+      HttpClient client = _httpClientFactory.CreateAuthenticatedClient(base.Request);
+
+      HttpResponseMessage response = await client.GetAsync($"TiposTelefone?OrderBy=descricaoTipoTelefone&Page=1&PageSize={System.Int32.MaxValue}");
+      if (!(response.IsSuccessStatusCode))
+        return NoContent();
+
+      string json = await response.Content.ReadAsStringAsync();
+      DefaultResponse<List<TipoTelefoneDto>> result = json.Deserialize<DefaultResponse<List<TipoTelefoneDto>>>();
+      return Json(result);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetByPkAsync([FromQuery] int codigoTipoTelefone)
     {
       if (!ModelState.IsValid)

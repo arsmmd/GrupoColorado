@@ -162,7 +162,9 @@
           </div>
           <div class="mb-3">
             <label>Tipo</label>
-            <input type="text" id="codigoTipoTelefone" name="codigoTipoTelefone" class="form-control" required />
+            <select id="codigoTipoTelefone" name="codigoTipoTelefone" class="form-select" required>
+              <option value="">Selecione</option>
+            </select>
           </div>
           <div class="mb-3">
             <label>Operadora</label>
@@ -194,12 +196,30 @@
 
 @section Scripts {
   <script>
+    function obterTiposTelefone()
+    {
+      $.ajax({
+        url: '/TiposTelefone/GetAll',
+        type: 'GET',
+        success: function (result) {
+          const select = $('#codigoTipoTelefone');
+          result.data.forEach(function (item) {
+            select.append(`<option value="${item.codigoTipoTelefone}">${item.descricaoTipoTelefone}</option>`);
+          });
+        },
+        error: function () {
+          toastr.error('Erro ao carregar os tipos de telefone.');
+        }
+      });
+    }
+
     $(document).ready(function () {
       if ($("#codigoCliente").val() == 0) {
         $('#areaTelefones').hide();
         $('.readonly-fields').hide();
       }
       else {
+        obterTiposTelefone();
         $('#areaTelefones').show();
         $('.readonly-fields').show();
       }
