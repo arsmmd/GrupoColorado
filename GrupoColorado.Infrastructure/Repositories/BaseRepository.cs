@@ -31,59 +31,78 @@ namespace GrupoColorado.Infrastructure.Repositories
     {
       IQueryable<T> query = _dbSet.AsQueryable();
 
+      // Filtragem dinâmica dos resultados
       foreach (KeyValuePair<string, string> filter in queryParameters.Filters)
       {
         string propertyName = filter.Key;
         string value = filter.Value;
 
-        System.Reflection.PropertyInfo property = typeof(T).GetProperty(propertyName, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-        if (property != null && !string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(value))
+          continue;
+
+        try
         {
-          try
+          ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
+          Expression propertyAccess = parameter;
+
+          Type type = typeof(T);
+          foreach (var part in propertyName.Split('.'))
           {
-            ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
-            MemberExpression member = Expression.Property(parameter, property.Name);
-
-            if (property.PropertyType == typeof(string))
+            var propertyInfo = type.GetProperty(part, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (propertyInfo == null)
             {
-              MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", Type.EmptyTypes);
-              MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-
-              MethodCallExpression toLowerMember = Expression.Call(member, toLowerMethod);
-              ConstantExpression constant = Expression.Constant(value.ToLower());
-              MethodCallExpression containsExpression = Expression.Call(toLowerMember, containsMethod, constant);
-
-              Expression<Func<T, bool>> lambda = Expression.Lambda<Func<T, bool>>(containsExpression, parameter);
-              query = query.Where(lambda);
+              propertyAccess = null;
+              break;
             }
-            else
-            {
-              Type propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-              object typedValue = Convert.ChangeType(value, propertyType);
-              ConstantExpression constant = Expression.Constant(typedValue);
-              BinaryExpression body = Expression.Equal(member, constant);
-              Expression<Func<T, bool>> lambda = Expression.Lambda<Func<T, bool>>(body, parameter);
-              query = query.Where(lambda);
-            }
+
+            propertyAccess = Expression.Property(propertyAccess, propertyInfo);
+            type = propertyInfo.PropertyType;
           }
-          catch
+
+          if (propertyAccess == null)
+            continue;
+
+          if (type == typeof(string))
           {
-            // Ignora erros de conversão ou construção de expressão
+            MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", Type.EmptyTypes);
+            MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+
+            var toLower = Expression.Call(propertyAccess, toLowerMethod);
+            var constant = Expression.Constant(value.ToLower());
+            var contains = Expression.Call(toLower, containsMethod, constant);
+
+            var lambda = Expression.Lambda<Func<T, bool>>(contains, parameter);
+            query = query.Where(lambda);
+          }
+          else
+          {
+            Type propertyType = Nullable.GetUnderlyingType(type) ?? type;
+            object typedValue = Convert.ChangeType(value, propertyType);
+            ConstantExpression constant = Expression.Constant(typedValue);
+            BinaryExpression equal = Expression.Equal(propertyAccess, constant);
+
+            var lambda = Expression.Lambda<Func<T, bool>>(equal, parameter);
+            query = query.Where(lambda);
           }
         }
+        catch
+        {
+          // Ignora erros de conversão ou construção de expressão
+        }
       }
-
-      if (includes != null)
-        foreach (Expression<Func<T, object>> include in includes)
-          query = query.Include(include);
-
 
       // Ordenação
       if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
         query = query.OrderBy($"{queryParameters.OrderBy} {(queryParameters.OrderDescending ? "descending" : "ascending")}");
 
-      int totalCount = await query.CountAsync();
 
+      // Inclusão das propriedades aninhadas (Navigations)
+      if (includes != null)
+        foreach (Expression<Func<T, object>> include in includes)
+          query = query.Include(include);
+
+
+      int totalCount = await query.CountAsync();
       if (totalCount == 0)
         return new GrupoColorado.Business.Shared.PagedResults<T>() { Count = 0 };
 
