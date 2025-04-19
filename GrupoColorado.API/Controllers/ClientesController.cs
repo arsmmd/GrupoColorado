@@ -21,11 +21,11 @@ namespace GrupoColorado.API.Controllers
   public class ClientesController : ControllerBase
   {
     private readonly IClienteService _service;
-    private readonly IUserContext _userContext;
+    private readonly IUserContextHelper _userContext;
     private readonly IMapper _mapper;
     private readonly ILogger<ClientesController> _logger;
 
-    public ClientesController(IClienteService service, IUserContext userContext, IMapper mapper, ILogger<ClientesController> logger)
+    public ClientesController(IClienteService service, IUserContextHelper userContext, IMapper mapper, ILogger<ClientesController> logger)
     {
       _service = service;
       _userContext = userContext;

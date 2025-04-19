@@ -58,7 +58,7 @@ CREATE TABLE [dbo].[Usuarios](
 	[CodigoUsuario] [int] IDENTITY(1,1) NOT NULL,
 	[Nome] [varchar](50) NOT NULL,
 	[Email] [varchar](250) NOT NULL,
-	[Senha] [varchar](50) NOT NULL,
+	[Senha] [varchar](75) NOT NULL,
 	[Ativo] [bit] NOT NULL,
 	[DataInsercao] [datetime] NOT NULL,
  CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
@@ -127,5 +127,7 @@ GO
 CREATE NONCLUSTERED INDEX [IX_Telefones] ON [dbo].[Telefones] ([CodigoCliente] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 
-INSERT Usuarios (Nome, Email, Senha) VALUES ('Administrador', 'admin@grupocolorado.com.br', 'entrada#CRUD')
+INSERT Usuarios (Nome, Email, Senha) VALUES ('Administrador', 'admin@grupocolorado.com.br', '10000.XvMI8mHXwXb2vGZz7h+3HA==.hSuFcdIYBosLOhJ+pXrtyCDEEyIjpi1VOh/lbJE9Ne0=')
 GO
+
+-- Senha padrão do Administrador: entrada#CRUD

@@ -21,11 +21,11 @@ namespace GrupoColorado.API.Controllers
   public class TiposTelefoneController : ControllerBase
   {
     private readonly ITipoTelefoneService _service;
-    private readonly IUserContext _userContext;
+    private readonly IUserContextHelper _userContext;
     private readonly IMapper _mapper;
     private readonly ILogger<TiposTelefoneController> _logger;
 
-    public TiposTelefoneController(ITipoTelefoneService service, IUserContext userContext, IMapper mapper, ILogger<TiposTelefoneController> logger)
+    public TiposTelefoneController(ITipoTelefoneService service, IUserContextHelper userContext, IMapper mapper, ILogger<TiposTelefoneController> logger)
     {
       _service = service;
       _userContext = userContext;

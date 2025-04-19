@@ -48,7 +48,7 @@ namespace GrupoColorado.API
         };
       });
       builder.Services.AddAuthorization();
-      builder.Services.AddScoped<IUserContext, UserContext>();
+      builder.Services.AddScoped<IUserContextHelper, UserContextHelper>();
 
 
       // Configuração do Mapper, para transformação das DTOs em Entities.

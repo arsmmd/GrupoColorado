@@ -2,16 +2,15 @@ using GrupoColorado.API.Helpers.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Security.Claims;
 
 namespace GrupoColorado.API.Helpers
 {
-  public class UserContext : IUserContext
+  public class UserContextHelper : IUserContextHelper
   {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<UserContext> _logger;
+    private readonly ILogger<UserContextHelper> _logger;
 
-    public UserContext(IHttpContextAccessor httpContextAccessor, ILogger<UserContext> logger)
+    public UserContextHelper(IHttpContextAccessor httpContextAccessor, ILogger<UserContextHelper> logger)
     {
       _httpContextAccessor = httpContextAccessor;
       _logger = logger;
@@ -21,9 +20,7 @@ namespace GrupoColorado.API.Helpers
     {
       try
       {
-        ClaimsPrincipal user = _httpContextAccessor.HttpContext?.User;
-        string claim = user?.FindFirst(typeName)?.Value;
-        return claim;
+        return _httpContextAccessor.HttpContext?.User?.FindFirst(typeName)?.Value;
       }
       catch (Exception ex)
       {

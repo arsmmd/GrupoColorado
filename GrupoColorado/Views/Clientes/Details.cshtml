@@ -121,7 +121,7 @@
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary">Salvar</button>
+  <button id="btnSalvar" type="submit" class="btn btn-primary">Salvar</button>
 </form>
 <br />
 <br />
@@ -199,7 +199,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Salvar</button>
+          <button id="btnSalvarTipoTelefone" type="submit" class="btn btn-success">Salvar</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </form>
@@ -209,6 +209,7 @@
 
 @section Scripts {
   <script>
+    // TODO: REMOVER OS SCRIPTS DA PÁGINA E PASSAR PARA O ARQUIVO 'wwwroot/js/clientes/details.js'
     function obterTiposTelefone() {
       $.ajax({
         url: '/TiposTelefone/GetAll',
@@ -268,9 +269,13 @@
           $('#usuarioInsercao').val(usuarioInsercao);
       });
 
-      // Submit do Form
+      // Submit do Form de Cliente
       $('#clienteForm').on('submit', function (e) {
         e.preventDefault();
+
+        const $btn = $('#btnSalvar');
+        $btn.prop('disabled', true).text('Salvando...');
+
 
         let formData = getFormData($(this));
         // Remove os 2 campos que não serão necessários, já que quem define esses valores é a API.
@@ -298,11 +303,13 @@
           data: JSON.stringify(formData),
           success: function () {
             toastr.success(`Registro ${message} com sucesso!`);
+            $btn.prop('disabled', false).text('Salvar');
             if (formData.codigoCliente == 0)
               window.location.href = '/Clientes';
           },
           error: function (e) {
             toastr.error(e.responseText);
+            $btn.prop('disabled', false).text('Salvar');
           }
         });
       });
@@ -349,13 +356,13 @@
             orderable: false,
             render: function (data, type, row) {
               return `
-                                                  <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
-                                                    <i class="fas fa-edit"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                  </button>
-                                                  `;
+                                                          <button class="btn btn-sm btn-primary btn-update" data-numerotelefone="${row.numeroTelefone}" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                          </button>
+                                                          <button class="btn btn-sm btn-danger btn-delete" data-numerotelefone="${row.numeroTelefone}" title="Excluir">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                          </button>
+                                                          `;
             }
           }
         ],
@@ -447,9 +454,13 @@
       });
 
 
-      // Submit do Form
+      // Submit do Form de Tipo de Telefone
       $('#formTelefone').on('submit', function (e) {
         e.preventDefault();
+
+        const $btn = $('#btnSalvarTipoTelefone');
+        $btn.prop('disabled', true).text('Salvando...');
+
 
         let formData = getFormData($(this));
         formData.codigoCliente = @Model.CodigoCliente;
@@ -482,9 +493,11 @@
             $('#telefonesTable').DataTable().ajax.reload(null, false);
             $('#modalTelefone').modal('hide');
             toastr.success(`Registro ${message} com sucesso!`);
+            $btn.prop('disabled', false).text('Salvar');
           },
           error: function (e) {
             toastr.error(e.responseText);
+            $btn.prop('disabled', false).text('Salvar');
           }
         });
       });

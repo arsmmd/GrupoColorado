@@ -36,20 +36,16 @@ namespace GrupoColorado.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
     {
       if (!ModelState.IsValid)
-        return View(model);
+        return BadRequest();
 
       StringContent content = new(model.Serialize(), Encoding.UTF8, "application/json");
-
-      HttpClient apiClient = _httpClientFactory.CreateClient("Api");
-      HttpResponseMessage response = await apiClient.PostAsync("auth/login", content);
+      HttpClient client = _httpClientFactory.CreateClient("Api");
+      HttpResponseMessage response = await client.PostAsync("auth/login", content);
       if (!response.IsSuccessStatusCode)
-      {
-        ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
-        return View(model);
-      }
+        return Unauthorized();
 
       string responseContent = await response.Content.ReadAsStringAsync();
       AuthResponse authResult = responseContent.Deserialize<AuthResponse>();
@@ -72,7 +68,7 @@ namespace GrupoColorado.Controllers
       ClaimsIdentity identity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
       await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new(identity));
 
-      return RedirectToAction("Index", "Home");
+      return Ok();
     }
   }
 }

@@ -21,11 +21,11 @@ namespace GrupoColorado.API.Controllers
   public class UsuariosController : ControllerBase
   {
     private readonly IUsuarioService _service;
-    private readonly IUserContext _userContext;
+    private readonly IUserContextHelper _userContext;
     private readonly IMapper _mapper;
     private readonly ILogger<UsuariosController> _logger;
 
-    public UsuariosController(IUsuarioService service, IUserContext userContext, IMapper mapper, ILogger<UsuariosController> logger)
+    public UsuariosController(IUsuarioService service, IUserContextHelper userContext, IMapper mapper, ILogger<UsuariosController> logger)
     {
       _service = service;
       _userContext = userContext;

@@ -15,16 +15,6 @@ namespace GrupoColorado.Infrastructure.Repositories
     {
     }
 
-    public override void Update(Usuario entity)
-    {
-      Usuario usuario = base.GetByPk(entity.CodigoUsuario);
-      entity.Senha = usuario.Senha; // Para garantir que a senha não será atualizada através de um UPDATE.
-      base.Update(entity);
-    }
-
-    public async Task<Usuario> GetByEmailAsync(string email)
-    {
-      return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
-    }
+    public async Task<Usuario> GetByEmailAsync(string email) => await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
   }
 }

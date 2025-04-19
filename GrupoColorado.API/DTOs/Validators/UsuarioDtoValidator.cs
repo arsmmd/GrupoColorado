@@ -17,8 +17,7 @@ namespace GrupoColorado.API.DTOs.Validators
 
       RuleFor(x => x.Senha)
           .NotEmpty().WithMessage("A senha é obrigatória.")
-          .MinimumLength(6).WithMessage("A senha deve ter no mínimo 6 caracteres.")
-          .MaximumLength(50).WithMessage("O tamanho máximo é 50 caracteres.");
+          .MaximumLength(64).WithMessage("O tamanho máximo é 64 caracteres.");
     }
   }
 }

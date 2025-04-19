@@ -25,7 +25,7 @@ namespace GrupoColorado.Infrastructure.Data.Mappings
 
       builder.Property(u => u.Senha)
           .IsRequired()
-          .HasMaxLength(50);
+          .HasMaxLength(75);
 
       builder.Property(t => t.Ativo).HasDefaultValue(true);
 

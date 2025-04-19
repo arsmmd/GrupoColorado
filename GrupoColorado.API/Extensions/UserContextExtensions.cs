@@ -5,7 +5,7 @@ namespace GrupoColorado.API.Extensions
 {
   public static class UserContextExtensions
   {
-    public static int GetNameIdentifierAsInt(this IUserContext userContext)
+    public static int GetNameIdentifierAsInt(this IUserContextHelper userContext)
     {
       return int.TryParse(userContext.GetUserClaim(ClaimTypes.NameIdentifier), out int codigoUsuario) ? codigoUsuario : 0;
     }
